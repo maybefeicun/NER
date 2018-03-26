@@ -302,37 +302,37 @@ TAG_PADDING_ID = get_class_size() - 1
 '''
     以下是做测试用的，不用管。
 '''
-if __name__ == '__main__':
-    #################### Just for testing #########################
-    vocab_size = get_src_vocab_size()
-    src_unknown_id = tgt_unknown_id = vocab_size
-    src_padding = vocab_size + 1
-
-    src_vocab_table, tgt_vocab_table = create_vocab_tables(src_vocab_file, tgt_vocab_file, src_unknown_id, tgt_unknown_id)
-    # iterator = get_iterator(src_vocab_table, tgt_vocab_table, vocab_size, 100, random_seed=None)
-    reverse_tgt_vocab_table = lookup_ops.index_to_string_table_from_file(
-        src_vocab_file, default_value='<tag-unknown>')
-
-    iterator = get_predict_iterator(src_vocab_table, vocab_size, 1)
-
-    with tf.Session() as sess:
-        sess.run(tf.global_variables_initializer())
-        sess.run(iterator.initializer)
-        tf.tables_initializer().run()
-
-        # 根据ID查字。
-        word = reverse_tgt_vocab_table.lookup(tf.constant(12001, dtype=tf.int64))
-        print(sess.run(word))
-        for i in range(10):
-            try:
-                # source, target = sess.run([iterator.source, iterator.target_input])
-                source = sess.run(iterator.source)
-                print(str(source.shape) + str(source[0][:5]))
-                # print i, source.shape, target.shape
-            except tf.errors.OutOfRangeError:
-                sess.run(iterator.initializer)
-                # source, target = sess.run([iterator.source, iterator.target_input])
-                source = sess.run(iterator.source)
-                print('new:' + str(source.shape) + str(source[0][:5]))
+# if __name__ == '__main__':
+#     #################### Just for testing #########################
+#     vocab_size = get_src_vocab_size()
+#     src_unknown_id = tgt_unknown_id = vocab_size
+#     src_padding = vocab_size + 1
+#
+#     src_vocab_table, tgt_vocab_table = create_vocab_tables(src_vocab_file, tgt_vocab_file, src_unknown_id, tgt_unknown_id)
+#     # iterator = get_iterator(src_vocab_table, tgt_vocab_table, vocab_size, 100, random_seed=None)
+#     reverse_tgt_vocab_table = lookup_ops.index_to_string_table_from_file(
+#         src_vocab_file, default_value='<tag-unknown>')
+#
+#     iterator = get_predict_iterator(src_vocab_table, vocab_size, 1)
+#
+#     with tf.Session() as sess:
+#         sess.run(tf.global_variables_initializer())
+#         sess.run(iterator.initializer)
+#         tf.tables_initializer().run()
+#
+#         # 根据ID查字。
+#         word = reverse_tgt_vocab_table.lookup(tf.constant(12001, dtype=tf.int64))
+#         print(sess.run(word))
+#         for i in range(10):
+#             try:
+#                 # source, target = sess.run([iterator.source, iterator.target_input])
+#                 source = sess.run(iterator.source)
+#                 print(str(source.shape) + str(source[0][:5]))
+#                 # print i, source.shape, target.shape
+#             except tf.errors.OutOfRangeError:
+#                 sess.run(iterator.initializer)
+#                 # source, target = sess.run([iterator.source, iterator.target_input])
+#                 source = sess.run(iterator.source)
+#                 print('new:' + str(source.shape) + str(source[0][:5]))
 
 
