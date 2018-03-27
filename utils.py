@@ -5,6 +5,7 @@ import numpy as np
 import collections
 import config
 import os
+import jieba
 
 src_file = config.FLAGS.src_file
 tgt_file = config.FLAGS.tgt_file
@@ -39,14 +40,17 @@ def build_word_index():
 
     print('building word index...')
     if not os.path.exists(src_vocab_file):
-        with open(src_vocab_file, 'w') as source:
-            f = open(word_embedding_file, 'r')
+        with open(src_vocab_file, 'w', encoding='utf-8') as source:
+            f = open(word_embedding_file, 'r', encoding='utf-8', errors='ignore')
             for line in f:
-                values = line.split()
-                word = values[0]  # 取词
+                if line[0] == '<' or len(line) == 1:
+                    continue
+                words = jieba.cut(line.strip())
+                # values = line.split()
+                word = '\n'.join(words) # 取词
                 # if type(word) is unicode:
-                word = word.encode('utf8')
-                source.write(word + '\n')
+                # word = word.encode('utf8')
+                source.write(str(word) + '\n')
         f.close()
     else:
         print('source vocabulary file has already existed, continue to next stage.')
@@ -65,7 +69,7 @@ def build_word_index():
             top_words = sorted(dict_word.items(), key=lambda s: s[1], reverse=True)
             with open(tgt_vocab_file, 'w') as s_vocab:
                 for word, frequence in top_words:
-                    s_vocab.write(word + '\n')
+                    s_vocab.write(str(word) + '\n')
     else:
         print('target vocabulary file has already existed, continue to next stage.')
 
@@ -252,7 +256,7 @@ def load_word2vec_embedding(vocab_size):
     rng = np.random.RandomState(23455)
     unknown = np.asarray(rng.normal(size=(embeddings_size)))
     padding = np.asarray(rng.normal(size=(embeddings_size)))
-    f = open(word_embedding_file)
+    f = open(word_embedding_file, encoding='utf-8')
     for index, line in enumerate(f):
         values = line.split()
         try:
